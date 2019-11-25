@@ -1,31 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import Dropzone from "react-dropzone";
-import socketIOClient from "socket.io-client";
 
-import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { Form, FormGroup, Button } from 'reactstrap';
+import LogAtividades from '../../components/LogAtividades';
 
 const RestoreDB = (props) => {
 
   const [arquivo, setArquivo] = useState();
-  const [mensagem, setMensagem] = useState([]);
-  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-  const getMensagem = msg => {
-    setMensagem([msg, ...mensagem]);
-    console.log(mensagem);
-  }
-  
-  const init = () => {
-    const socket = socketIOClient("http://localhost:5000");
-    socket.on('db restore', (msg) => {
-      getMensagem(msg);
-    });
-  }
-
-  useEffect(() => {
-    init();
-  }, [])
 
   const onDropFiles = (acceptedFiles, props) => {
     if (props.input.onChange) {
@@ -84,8 +66,7 @@ const RestoreDB = (props) => {
         </Form>
       )}
       />
-      <p>Mensagems:</p>
-      {mensagem && mensagem.map(msg => <p>{msg}</p>)}
+      <LogAtividades/>
   </>
 
 }

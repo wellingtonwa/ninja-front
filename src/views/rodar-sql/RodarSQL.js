@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form as FinalForm, Field } from "react-final-form";
 import axios from "axios";
-import LogAtividades from '../../components/LogAtividades';
-
+import LogAtividades from "../../components/LogAtividades";
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 
 const getHeader = () => ({
@@ -12,12 +11,22 @@ const getHeader = () => ({
   }
 });
 
-const RestoreWetransfer = props => {
+const RodarSQL = props => {
+  const [bancos, setBancos] = useState([]);
+  
+    const buscarBancos = () => {
+      axios.get("http://localhost:5000/rodar-sql").then(data => {
+        setBancos(data.data);
+      });
+    };
+
+  useState(() => {
+    buscarBancos();
+  }, []);
 
   const onSubmit = values => {
     if (values) {
-      axios
-        .post("http://localhost:5000/restaurar-link", values, getHeader());
+      axios.post("http://localhost:5000/rodar-sql", values, getHeader());
     }
   };
 
@@ -28,13 +37,16 @@ const RestoreWetransfer = props => {
         render={({ handleSubmit, form, submitting, pristine, values }) => (
           <Form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label>Nome do Banco de Dados</Label>
+              <Label>Banco:</Label>
               <Field
                 name={`nome-banco`}
-                type="text"
+                type="select"
                 placeholder="Nome do Banco de Dados"
               >
-                {({ input }) => <Input {...input} />}
+                {({ input }) => <Input {...input} >
+                    {console.log(bancos)}
+                    {bancos && bancos.map((val, idx) => <select key={'key'+idx} value={val.dbname}>{val.dbname}</select>)}
+                    </Input>}
               </Field>
             </FormGroup>
             <FormGroup>
@@ -62,10 +74,10 @@ const RestoreWetransfer = props => {
             </FormGroup>
           </Form>
         )}
-        />
-        <LogAtividades/>
+      />
+      <LogAtividades />
     </>
   );
 };
 
-export default RestoreWetransfer;
+export default RodarSQL;

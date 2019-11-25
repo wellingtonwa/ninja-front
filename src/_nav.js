@@ -13,6 +13,16 @@ export default {
         variant: 'info',
         text: 'NEW',
       },
+    },
+    {
+      name: 'Restaurar WeTranfer',
+      url: '/restore-wetransfer',
+      icon: 'icon-speedometer'
+    },
+    {
+      name: 'Rodar SQL',
+      url: '/rodar-sql',
+      icon: 'icon-speedometer'
     }
   ]
 };
