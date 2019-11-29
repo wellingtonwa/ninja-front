@@ -15,7 +15,7 @@ const RodarSQL = props => {
   const [bancos, setBancos] = useState([]);
   
     const buscarBancos = () => {
-      axios.get("http://localhost:5000/rodar-sql").then(data => {
+      axios.get("http://localhost:5000/rodar-sql/bancos").then(data => {
         setBancos(data.data);
       });
     };
@@ -26,6 +26,7 @@ const RodarSQL = props => {
 
   const onSubmit = values => {
     if (values) {
+        console.log(values)
       axios.post("http://localhost:5000/rodar-sql", values, getHeader());
     }
   };
@@ -39,24 +40,25 @@ const RodarSQL = props => {
             <FormGroup>
               <Label>Banco:</Label>
               <Field
-                name={`nome-banco`}
+                name={`nome_banco`}
                 type="select"
                 placeholder="Nome do Banco de Dados"
               >
-                {({ input }) => <Input {...input} >
-                    {console.log(bancos)}
-                    {bancos && bancos.map((val, idx) => <select key={'key'+idx} value={val.dbname}>{val.dbname}</select>)}
-                    </Input>}
+                {({ input }) => <Input {...input}>    
+                    <option value={undefined}>Selecione um banco</option>
+                    {bancos && bancos.map((dado, idx) => <option value={dado.dbname} key={`key${idx}`}>{dado.dbname}</option>)}
+                    </Input>
+                }
               </Field>
             </FormGroup>
             <FormGroup>
-              <Label>Link do WeTransfer</Label>
+              <Label>SQL a ser executado</Label>
               <Field
-                name={`link`}
-                type="text"
-                placeholder="Cole aqui o link do WeTransfer"
+                name={`sql`}
+                type="textarea"
+                placeholder="Cole aqui o SQL"
               >
-                {({ input }) => <Input {...input} />}
+                {({ input }) => <Input {...input} rows="5"/>}
               </Field>
             </FormGroup>
             <FormGroup className="buttons">

@@ -23,6 +23,16 @@ export default {
       name: 'Rodar SQL',
       url: '/rodar-sql',
       icon: 'icon-speedometer'
+    },
+    {
+      name: 'SQL da Versão',
+      url: '/sql-versao',
+      icon: 'icon-speedometer'
+    },
+    {
+      name: 'Configurações',
+      url: '/configs',
+      icon: 'icon-speedometer'
     }
   ]
 };
