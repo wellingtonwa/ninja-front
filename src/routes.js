@@ -6,6 +6,7 @@ const RestoreWetranfer = React.lazy(() => import('./views/restore-wetransfer/Res
 const RodarSQL = React.lazy(() => import('./views/rodar-sql/RodarSQL'));
 const Configs = React.lazy(() => import('./views/configs/Configs'));
 const SqlVersao = React.lazy(() => import('./views/sql-versao/SqlVersao'));
+const LimparPastaUpload = React.lazy(() => import('./views/limpar-pasta-upload/LimparPastaUpload'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -16,6 +17,7 @@ const routes = [
   { path: '/configs', exact: true, name: 'Configurações', component: Configs },
   { path: '/sql-versao', exact: true, name: 'SQL da Versão', component: SqlVersao },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+  { path: '/limpar-pasta', name: 'Limpar Pasta', component: LimparPastaUpload },
 ];
 
 export default routes;

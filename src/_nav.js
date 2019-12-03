@@ -30,6 +30,11 @@ export default {
       icon: 'icon-speedometer'
     },
     {
+      name: 'Limpar pasta download',
+      url: '/limpar-pasta',
+      icon: 'icon-speedometer'
+    },
+    {
       name: 'Configurações',
       url: '/configs',
       icon: 'icon-speedometer'
