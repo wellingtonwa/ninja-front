@@ -35,6 +35,11 @@ export default {
       icon: 'icon-speedometer'
     },
     {
+      name: 'Apagar Banco',
+      url: '/apagar-db',
+      icon: 'icon-speedometer'
+    },
+    {
       name: 'Configurações',
       url: '/configs',
       icon: 'icon-speedometer'
