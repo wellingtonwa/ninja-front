@@ -15,8 +15,13 @@ export default {
       },
     },
     {
-      name: 'Restaurar WeTranfer',
+      name: 'Restaurar WeTransfer',
       url: '/restore-wetransfer',
+      icon: 'icon-speedometer'
+    },
+    {
+      name: 'Upload Wetransfer',
+      url: '/upload-db',
       icon: 'icon-speedometer'
     },
     {

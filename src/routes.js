@@ -8,6 +8,7 @@ const Configs = React.lazy(() => import('./views/configs/Configs'));
 const SqlVersao = React.lazy(() => import('./views/sql-versao/SqlVersao'));
 const LimparPastaUpload = React.lazy(() => import('./views/limpar-pasta-upload/LimparPastaUpload'));
 const ApagarDB = React.lazy(() => import('./views/apagar-db/ApagarDB'));
+const UploadWeTransfer = React.lazy(() => import('./views/upload-wetransfer/UploadWeTransfer'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -20,6 +21,7 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/limpar-pasta', name: 'Limpar Pasta', component: LimparPastaUpload },
   { path: '/apagar-db', exact: true, name: 'Apagar Bancos', component: ApagarDB },
+  { path: '/upload-db', exact: true, name: 'Upload de Bancos', component: UploadWeTransfer },
 ];
 
 export default routes;
