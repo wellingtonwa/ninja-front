@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { Form as FinalForm, Field } from "react-final-form";
 import LogAtividades from "../../components/LogAtividades";
-import { Form, FormGroup, Label, Input, Button, Col, Row } from "reactstrap";
+import { Form, FormGroup, Label, Input, Button, Col } from "reactstrap";
 
 const getHeader = () => ({
     headers: {
@@ -37,32 +37,33 @@ const ApagarDB = props => {
             onSubmit={onSubmit}
             render={({ handleSubmit, form, submitting, pristine, values }) => (
               <Form onSubmit={handleSubmit} inline>
-                <Label>Selecione os bancos:</Label>
-                {bancos && bancos.map((dado, idx) => <FormGroup check className="ml-2" >
+                {bancos && bancos.map((dado, idx) => <Col sm="2">
+                <FormGroup check >
                   <Field
                     name={`nome_banco[${dado.dbname}]`}
-                    type="checkbox">
+                    type="checkbox">  
                     {({ input }) => <>
                         <Label check>
                           <Input {...input} id={`${idx}`} key={`key${idx}`} value={dado.dbname}/> {dado.dbname}
                         </Label>
                       </> }
                   </Field>
-                </FormGroup>)}
-                <FormGroup check row >
-                  <Col>
-                    <Button type="submit" disabled={submitting || pristine}>
-                      Enviar
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={form.reset}
-                      disabled={submitting || pristine}
-                      className="ml-2">
-                      Limpar
-                    </Button>
-                  </Col>
                 </FormGroup>
+                </Col>)}
+                <Col sm="12">
+                  <FormGroup>
+                      <Button type="submit" disabled={submitting || pristine}>
+                        Enviar
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={form.reset}
+                        disabled={submitting || pristine}
+                        className="ml-2">
+                        Limpar
+                      </Button>
+                  </FormGroup>
+                </Col>
               </Form>
             )}/>
           <LogAtividades />

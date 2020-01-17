@@ -11,7 +11,7 @@ const Configs = props => {
     axios.get("http://localhost:5000/configs/dados").then(data => {
       setDados(data.data);
       let test = {};
-      data.data.map(att => {
+      data.data.forEach(att => {
         test[att.property] = att.value;
       });
       setValores(test);

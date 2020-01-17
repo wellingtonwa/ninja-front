@@ -3,13 +3,6 @@ import axios from "axios";
 import LogAtividades from "../../components/LogAtividades";
 import { Button } from "reactstrap";
 
-const getHeader = () => ({
-  headers: {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*"
-  }
-});
-
 const STATES = {
     INITIAL: 'initial',
     DIRTY: 'dirty',
@@ -20,13 +13,8 @@ const STATES = {
 const LimparPastaUpload = props => {
   const [retorno, setRetorno] = useState({});
   const [state, setState] = useState("initial");
-  const [initialValues, setInitialValues] = useState({});
 
   useEffect(() => {setState(retorno.state)}, [retorno]);
-
-  useEffect(() => {
-    if(state === STATES.SUCCESS) setInitialValues({'sql': retorno.sql});
-  }, [state]);
 
   const buscarArquivos = () => {
     axios

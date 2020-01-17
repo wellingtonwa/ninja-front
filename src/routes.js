@@ -13,8 +13,9 @@ const UploadWeTransfer = React.lazy(() => import('./views/upload-wetransfer/Uplo
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/restore-wetransfer', exact: true, name: "Restaurar Banco de Link WeTransfer", component: RestoreWetranfer},
-  { path: '/restore-db', exact: true, name: 'Restaurar Banco de Dados', component: RestoreDB },
+  
+  { path: '/restore-url', exact: true, name: "Restaurar Banco de dados a partir de uma URL", component: RestoreWetranfer},
+  { path: '/restore-file', exact: true, name: 'Restaurar Banco de Dados via Arquivo', component: RestoreDB },
   { path: '/rodar-sql', exact: true, name: 'Rodar SQL', component: RodarSQL },
   { path: '/configs', exact: true, name: 'Configurações', component: Configs },
   { path: '/sql-versao', exact: true, name: 'SQL da Versão', component: SqlVersao },

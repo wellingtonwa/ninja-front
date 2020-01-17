@@ -6,7 +6,6 @@ import { Button } from "reactstrap";
 const initialState = { mensagem: [] };
 
 function reducer(state, action) {
-  console.log(action);
   switch (action.type) {
     case "append":
       return {

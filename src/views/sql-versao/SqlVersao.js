@@ -80,7 +80,7 @@ const SqlVersao = props => {
                     placeholder="O Ninja precisa do código de autorização para continuar"/>}
                   </Field>
                 </FormGroup>
-                <span>Para obter o código de autorização <a href={retorno.authUrl} target="_blank">clique aqui</a></span>
+                <span>Para obter o código de autorização <a href={retorno.authUrl} target="_blank" rel="noopener noreferrer">clique aqui</a></span>
               </>
             )}
             {state === STATES.SUCCESS && <FormGroup>

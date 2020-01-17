@@ -3,51 +3,42 @@ export default {
     {
       name: 'Home',
       url: '/dashboard',
-      icon: 'icon-speedometer'
+      icon: 'cil-home'
     },
     {
-      name: 'Restaurar Banco',
-      url: '/restore-db',
-      icon: 'icon-speedometer',
-      badge: {
-        variant: 'info',
-        text: 'NEW',
-      },
-    },
-    {
-      name: 'Restaurar WeTransfer',
-      url: '/restore-wetransfer',
-      icon: 'icon-speedometer'
+      name: 'Restore DB',
+      url: '/restore-url',
+      icon: 'cil-file'
     },
     {
       name: 'Upload Wetransfer',
       url: '/upload-db',
-      icon: 'icon-speedometer'
+      icon: 'icon-cloud-download'
     },
     {
       name: 'Rodar SQL',
       url: '/rodar-sql',
-      icon: 'icon-speedometer'
+      icon: 'cil-chevron-double-right'
     },
     {
       name: 'SQL da Versão',
       url: '/sql-versao',
-      icon: 'icon-speedometer'
+      icon: 'cib-google'
     },
     {
       name: 'Limpar pasta download',
       url: '/limpar-pasta',
-      icon: 'icon-speedometer'
+      icon: 'cil-trash'
     },
     {
       name: 'Apagar Banco',
       url: '/apagar-db',
-      icon: 'icon-speedometer'
+      icon: 'cil-trash'
     },
     {
       name: 'Configurações',
       url: '/configs',
-      icon: 'icon-speedometer'
+      icon: 'cil-graph'
     }
   ]
 };
