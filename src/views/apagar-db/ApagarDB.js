@@ -11,6 +11,8 @@ const getHeader = () => ({
     }
 });
 
+const REGEX_NUMEROCASO = /(?<=calima_caso_)[0-9]{5}/g;
+
 const ApagarDB = props => {
     const [bancos, setBancos] = useState([]);
   
@@ -19,6 +21,13 @@ const ApagarDB = props => {
         setBancos(data.data);
       });
     };
+
+    const getLink = (nomeBanco) => {
+      var link = 'https://mantis.projetusti.com.br/view.php?id=';
+      if (nomeBanco.match(REGEX_NUMEROCASO)) {
+        return <a href={`${link}${nomeBanco.match(REGEX_NUMEROCASO)}`} rel="noopener noreferrer" target="_blank" title="Link para o caso">^</a>
+      }
+    } 
 
     useState(() => {
         buscarBancos();
@@ -37,14 +46,14 @@ const ApagarDB = props => {
             onSubmit={onSubmit}
             render={({ handleSubmit, form, submitting, pristine, values }) => (
               <Form onSubmit={handleSubmit} inline>
-                {bancos && bancos.map((dado, idx) => <Col sm="2">
+                {bancos && bancos.map((dado, idx) => <Col sm="3">
                 <FormGroup check >
                   <Field
                     name={`nome_banco[${dado.dbname}]`}
                     type="checkbox">  
                     {({ input }) => <>
                         <Label check>
-                          <Input {...input} id={`${idx}`} key={`key${idx}`} value={dado.dbname}/> {dado.dbname}
+                          <Input {...input} id={`${idx}`} key={`key${idx}`} value={dado.dbname}/> {dado.dbname} {getLink(dado.dbname)}
                         </Label>
                       </> }
                   </Field>
@@ -66,7 +75,7 @@ const ApagarDB = props => {
                 </Col>
               </Form>
             )}/>
-          <LogAtividades />
+          <LogAtividades  {...props} />
         </>
     );
 

@@ -76,7 +76,7 @@ const RestoreWetransfer = props => {
               </Form>
             )}
           />
-          <LogAtividades />
+          <LogAtividades  {...props} />
         </div>
       </div>
     </>

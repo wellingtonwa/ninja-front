@@ -1,6 +1,7 @@
-import React, { Component, Suspense } from 'react';
+import React, { Suspense, useReducer, useEffect, useState } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { Container } from 'reactstrap';
+import socketIOClient from "socket.io-client";
 
 import {
   AppBreadcrumb,
@@ -21,14 +22,44 @@ import routes from '../../routes';
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
 const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
 
-class DefaultLayout extends Component {
-  loading = () => <div className="animated fadeIn pt-1 text-center"><div className="sk-spinner sk-spinner-pulse"></div></div>;
+const initialState = { socket: undefined, mensagem: [], dispatch: undefined };
 
-  render() {
+function reducer(state, action) {
+  switch (action.type) {
+    case "conectar":
+      const socket = socketIOClient("http://localhost:5000");
+      socket.on("db restore", msg => {
+        action.payload({ type: "append", 'payload': msg });
+      });
+      return {
+        ...state,
+        socket,
+        dispatch: action.payload 
+      };
+    case "append":
+      return {
+        ...state,
+        mensagem: [action.payload, ...state.mensagem]
+      };
+    default:
+      throw new Error();
+  }
+}
+const DefaultLayout = props => {
+  const loading = () => <div className="animated fadeIn pt-1 text-center"><div className="sk-spinner sk-spinner-pulse"></div></div>;
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const [auxProps, setAuxProps] = useState(null)
+
+  useEffect(() => {
+    if (!state.socket)
+      dispatch({type: 'conectar', payload: dispatch});
+    setAuxProps({...props, ...{socket: state.socket, mensagem: state.mensagem, dispatch}});
+  }, [state])
+
     return (
       <div className="app">
         <AppHeader fixed>
-          <Suspense fallback={this.loading()}>
+          <Suspense fallback={loading()}>
             <DefaultHeader />
           </Suspense>
         </AppHeader>
@@ -37,7 +68,7 @@ class DefaultLayout extends Component {
             <AppSidebarHeader />
             <AppSidebarForm />
             <Suspense>
-              <AppSidebarNav navConfig={navigation} {...this.props} />
+              <AppSidebarNav navConfig={navigation} {...props} />
             </Suspense>
             <AppSidebarFooter />
             <AppSidebarMinimizer />
@@ -45,7 +76,7 @@ class DefaultLayout extends Component {
           <main className="main">
             <AppBreadcrumb appRoutes={routes}/>
             <Container fluid>
-              <Suspense fallback={this.loading()}>
+              <Suspense fallback={loading()}>
                 <Switch>
                   {routes.map((route, idx) => {
                     return route.component ? (
@@ -55,7 +86,7 @@ class DefaultLayout extends Component {
                         exact={route.exact}
                         name={route.name}
                         render={props => (
-                          <route.component {...props} />
+                          <route.component {...auxProps} />
                         )} />
                     ) : (null);
                   })}
@@ -66,13 +97,12 @@ class DefaultLayout extends Component {
           </main>
         </div>
         <AppFooter>
-          <Suspense fallback={this.loading()}>
+          <Suspense fallback={loading()}>
             <DefaultFooter />
           </Suspense>
         </AppFooter>
       </div>
     );
-  }
 }
 
 export default DefaultLayout;

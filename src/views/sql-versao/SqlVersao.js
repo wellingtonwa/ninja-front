@@ -125,7 +125,7 @@ const SqlVersao = props => {
           </Form>
         )}
       />
-      <LogAtividades />
+      <LogAtividades {...props} />
     </>
   );
 };

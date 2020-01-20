@@ -11,7 +11,6 @@ const RestoreDB = props => {
 
   const onDropFiles = (acceptedFiles, props) => {
     if (props.input.onChange) {
-      console.log(["acceptedFiles", acceptedFiles]);
       props.input.onChange(acceptedFiles[0]);
       setArquivo(acceptedFiles[0].name);
     }
@@ -100,7 +99,7 @@ const RestoreDB = props => {
               </Form>
             )}
           />
-          <LogAtividades />
+          <LogAtividades {...props} />
         </div>
       </div>
     </>

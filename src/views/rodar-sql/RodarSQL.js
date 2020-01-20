@@ -26,7 +26,6 @@ const RodarSQL = props => {
 
   const onSubmit = values => {
     if (values) {
-        console.log(values)
       axios.post("http://localhost:5000/rodar-sql", values, getHeader());
     }
   };
@@ -77,7 +76,7 @@ const RodarSQL = props => {
           </Form>
         )}
       />
-      <LogAtividades />
+      <LogAtividades {...props} />
     </>
   );
 };

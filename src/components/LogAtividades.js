@@ -1,15 +1,14 @@
 import React, { useEffect, useReducer } from "react";
-import socketIOClient from "socket.io-client";
 import { Button } from "reactstrap";
 
-
-const initialState = { mensagem: [] };
+const initialState = { mensagem: [], carregado: false };
 
 function reducer(state, action) {
   switch (action.type) {
     case "append":
       return {
         ...state,
+        carregado: true,
         mensagem: [action.payload, ...state.mensagem]
       };
     case "clear":
@@ -26,11 +25,12 @@ const LogAtividades = props => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    const socket = socketIOClient("http://localhost:5000");
-    socket.on("db restore", msg => {
-      dispatch({ type: "append", payload: msg });
-    });
-  }, []);
+    if (props.socket && !state.carregado) {
+      props.socket.on("db restore", msg => {
+        dispatch({ type: "append", payload: msg });
+      });
+    }
+  },[]);
 
   return (
     <div className="card">

@@ -67,7 +67,7 @@ const UploadWeTransfer = props => {
           </Form>
         )}
       />
-      <LogAtividades />
+      <LogAtividades {...props} />
     </>
   );
 };

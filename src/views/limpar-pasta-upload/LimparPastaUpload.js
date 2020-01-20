@@ -49,7 +49,7 @@ const LimparPastaUpload = props => {
                 </select>
             </div>
         </div>
-        <LogAtividades />
+        <LogAtividades {...props} />
     </>
   );
 };
