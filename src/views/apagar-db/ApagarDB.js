@@ -1,84 +1,180 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Form as FinalForm, Field } from "react-final-form";
 import LogAtividades from "../../components/LogAtividades";
 import { Form, FormGroup, Label, Input, Button, Col } from "reactstrap";
 
 const getHeader = () => ({
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
-    }
+  headers: {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*"
+  }
 });
 
-const REGEX_NUMEROCASO = /(?<=calima_caso_)[0-9]{5}/g;
+const REGEX_NUMEROCASO = /(?<=.*)[0-9]{5}$/g;
+
+const initialState = { issue_number: [] };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "increment":
+      return { count: state.count + 1 };
+    case "decrement":
+      return { count: state.count - 1 };
+    default:
+      throw new Error();
+  }
+}
 
 const ApagarDB = props => {
-    const [bancos, setBancos] = useState([]);
-  
-    const buscarBancos = () => {
-      axios.get("http://localhost:5000/rodar-sql/bancos").then(data => {
-        setBancos(data.data);
+  const [bancos, setBancos] = useState([]);
+  const [issueNumber, setIssueNumber] = useState([]);
+  const [dadosCasos, setDadosCasos] = useState({});
+
+  const buscarBancos = () => {
+    axios.get("http://localhost:5000/rodar-sql/bancos").then(data => {
+      setBancos(data.data);
+      console.log(data.data);
+      const casos = data.data
+        .filter(item => item.dbname.match(REGEX_NUMEROCASO))
+        .map(item => item.dbname.match(REGEX_NUMEROCASO)[0]);
+      setIssueNumber(casos);
+      buscarDadosCasos(casos);
+    });
+  };
+
+  const buscarDadosCasos = casos => {
+    axios
+      .post("http://localhost:5000/mantis", { issue_number: casos })
+      .then(data => {
+        setDadosCasos(data.data);
       });
-    };
+  };
 
-    const getLink = (nomeBanco) => {
-      var link = 'https://mantis.projetusti.com.br/view.php?id=';
-      if (nomeBanco.match(REGEX_NUMEROCASO)) {
-        return <a href={`${link}${nomeBanco.match(REGEX_NUMEROCASO)}`} rel="noopener noreferrer" target="_blank" title="Link para o caso">^</a>
+  const getInformacoesCaso = nomeBanco => {
+    let dados = undefined;
+    var link = "https://mantis.projetusti.com.br/view.php?id=";
+    if (nomeBanco.match(REGEX_NUMEROCASO)) {
+      const numeroDoCaso = nomeBanco.match(REGEX_NUMEROCASO)[0];
+      const informacoes = dadosCasos[numeroDoCaso];
+      if (informacoes) {
+        dados = <>
+          <a
+          href={`${link}${numeroDoCaso}`}
+          rel="noopener noreferrer"
+          target="_blank"
+          title="Link para o caso"
+        >
+          Resumo: {informacoes.resumo}
+          </a><br/>
+          <span style={{color: getIssueStateColor(informacoes.estado)}}>Estado: {informacoes.estado}</span><br/>
+          <b>Aberto em:</b> {informacoes.dataEnvio}<br/>
+          <b>Previsto para Versão:</b> {informacoes.versao}<br/>
+          <b>Cliente:</b> {informacoes.codigoCliente}<br/>
+          <b>Complexidade:</b> {informacoes.complexidade}<br/>
+        </>;
       }
-    } 
+    }
+    return dados;
+  }
 
-    useState(() => {
-        buscarBancos();
-    }, []);
+  const getIssueStateColor = state => {
+    switch (state) {
+      case "resolvido":
+        return 'green';
+      case "aguardando code review":
+        return 'red';
+      case "desenvolvimento":
+        return '#fff494';
+      case "retorno":
+        return 'darkviolet';
+      case 'aguardando teste':
+        return 'blue';
+      default:
+        return '#73818f';
+    }
+  }
 
-    const onSubmit = async values => {
-        if (values) {
-          axios.post("http://localhost:5000/apagar-db/apagar", values, getHeader())
-          .then(dados => buscarBancos());
-        }
-      };
+  const functionInit = () => {
+    buscarBancos();
+  };
 
+  useEffect(() => {
+    functionInit();
+  }, []);
+
+  const onSubmit = async values => {
+    if (values) {
+      axios
+        .post("http://localhost:5000/apagar-db/apagar", values, getHeader())
+        .then(dados => buscarBancos());
+    }
+  };
+
+  const bancosFields = lista => {
     return (
-        <>
-          <FinalForm
-            onSubmit={onSubmit}
-            render={({ handleSubmit, form, submitting, pristine, values }) => (
-              <Form onSubmit={handleSubmit} inline>
-                {bancos && bancos.map((dado, idx) => <Col sm="3">
-                <FormGroup check >
-                  <Field
-                    name={`nome_banco[${dado.dbname}]`}
-                    type="checkbox">  
-                    {({ input }) => <>
-                        <Label check>
-                          <Input {...input} id={`${idx}`} key={`key${idx}`} value={dado.dbname}/> {dado.dbname} {getLink(dado.dbname)}
+      lista &&
+      lista.map((dado, idx) => (
+        <Col sm="4">
+          <FormGroup>
+            <div className="card w-100">
+              <div className="card-body">
+                <Field name={`nome_banco[${dado.dbname}]`} type="checkbox">
+                  {({ input }) => (
+                    <>
+                      <h5 className="card-title">
+                        <Label style={{justifyContent: "left"}}>
+                          <Input
+                            {...input}
+                            id={`${idx}`}
+                            key={`key${idx}`}
+                            value={dado.dbname}
+                          />
+                          {dado.dbname}
                         </Label>
-                      </> }
-                  </Field>
-                </FormGroup>
-                </Col>)}
-                <Col sm="12">
-                  <FormGroup>
-                      <Button type="submit" disabled={submitting || pristine}>
-                        Enviar
-                      </Button>
-                      <Button
-                        type="button"
-                        onClick={form.reset}
-                        disabled={submitting || pristine}
-                        className="ml-2">
-                        Limpar
-                      </Button>
-                  </FormGroup>
-                </Col>
-              </Form>
-            )}/>
-          <LogAtividades  {...props} />
-        </>
+                      </h5>
+                      <h6 class="card-subtitle mb-2">
+                        {getInformacoesCaso(dado.dbname)}
+                      </h6>
+                    </>
+                  )}
+                </Field>
+              </div>
+            </div>
+          </FormGroup>
+        </Col>
+      ))
     );
+  };
 
+  return (
+    <>
+      <FinalForm
+        onSubmit={onSubmit}
+        render={({ handleSubmit, form, submitting, pristine, values }) => (
+          <Form onSubmit={handleSubmit} inline>
+            {bancosFields(bancos)}
+            <Col sm="12">
+              <FormGroup>
+                <Button type="submit" disabled={submitting || pristine}>
+                  Enviar
+                </Button>
+                <Button
+                  type="button"
+                  onClick={form.reset}
+                  disabled={submitting || pristine}
+                  className="ml-2"
+                >
+                  Limpar
+                </Button>
+              </FormGroup>
+            </Col>
+          </Form>
+        )}
+      />
+      <LogAtividades {...props} />
+    </>
+  );
 };
 
 export default ApagarDB;
