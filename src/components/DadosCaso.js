@@ -41,11 +41,10 @@ const DadosCaso = props => {
           <b>Cliente:</b> {informacoes.codigoCliente}<br/>
           <b>Complexidade:</b> {informacoes.complexidade}<br/>
         </>;
-      } else {
-          dados = <></>;
       }
     }
-    return dados;
+    
+    return dados === undefined ? <></> : dados;
   }
 
   export default DadosCaso
