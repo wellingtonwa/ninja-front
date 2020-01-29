@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Form as FinalForm, Field } from "react-final-form";
 import LogAtividades from "../../components/LogAtividades";
+import DadosCaso from "../../components/DadosCaso";
 import { Form, FormGroup, Label, Input, Button, Col } from "reactstrap";
 
 const getHeader = () => ({
@@ -34,7 +35,6 @@ const ApagarDB = props => {
   const buscarBancos = () => {
     axios.get("http://localhost:5000/rodar-sql/bancos").then(data => {
       setBancos(data.data);
-      console.log(data.data);
       const casos = data.data
         .filter(item => item.dbname.match(REGEX_NUMEROCASO))
         .map(item => item.dbname.match(REGEX_NUMEROCASO)[0]);
@@ -50,51 +50,7 @@ const ApagarDB = props => {
         setDadosCasos(data.data);
       });
   };
-
-  const getInformacoesCaso = nomeBanco => {
-    let dados = undefined;
-    var link = "https://mantis.projetusti.com.br/view.php?id=";
-    if (nomeBanco.match(REGEX_NUMEROCASO)) {
-      const numeroDoCaso = nomeBanco.match(REGEX_NUMEROCASO)[0];
-      const informacoes = dadosCasos[numeroDoCaso];
-      if (informacoes) {
-        dados = <>
-          <a
-          href={`${link}${numeroDoCaso}`}
-          rel="noopener noreferrer"
-          target="_blank"
-          title="Link para o caso"
-        >
-          Resumo: {informacoes.resumo}
-          </a><br/>
-          <span style={{color: getIssueStateColor(informacoes.estado)}}>Estado: {informacoes.estado}</span><br/>
-          <b>Aberto em:</b> {informacoes.dataEnvio}<br/>
-          <b>Previsto para Versão:</b> {informacoes.versao}<br/>
-          <b>Cliente:</b> {informacoes.codigoCliente}<br/>
-          <b>Complexidade:</b> {informacoes.complexidade}<br/>
-        </>;
-      }
-    }
-    return dados;
-  }
-
-  const getIssueStateColor = state => {
-    switch (state) {
-      case "resolvido":
-        return 'green';
-      case "aguardando code review":
-        return 'red';
-      case "desenvolvimento":
-        return '#fff494';
-      case "retorno":
-        return 'darkviolet';
-      case 'aguardando teste':
-        return 'blue';
-      default:
-        return '#73818f';
-    }
-  }
-
+  
   const functionInit = () => {
     buscarBancos();
   };
@@ -105,8 +61,13 @@ const ApagarDB = props => {
 
   const onSubmit = async values => {
     if (values) {
+      var regex = /(?<=db-).*/;
+      var sanitized_values = { nome_banco: {} }
+      for(var x in values.nome_banco) {
+        sanitized_values.nome_banco[x.match(regex)] = true;
+      }
       axios
-        .post("http://localhost:5000/apagar-db/apagar", values, getHeader())
+        .post("http://localhost:5000/apagar-db/apagar", sanitized_values, getHeader())
         .then(dados => buscarBancos());
     }
   };
@@ -119,7 +80,7 @@ const ApagarDB = props => {
           <FormGroup>
             <div className="card w-100">
               <div className="card-body">
-                <Field name={`nome_banco[${dado.dbname}]`} type="checkbox">
+                <Field name={`nome_banco[db-${dado.dbname}]`} type="checkbox">
                   {({ input }) => (
                     <>
                       <h5 className="card-title">
@@ -133,8 +94,8 @@ const ApagarDB = props => {
                           {dado.dbname}
                         </Label>
                       </h5>
-                      <h6 class="card-subtitle mb-2">
-                        {getInformacoesCaso(dado.dbname)}
+                      <h6 className="card-subtitle mb-2">
+                        <DadosCaso nomeBanco={dado.dbname} dadosCasos={dadosCasos}/>
                       </h6>
                     </>
                   )}
