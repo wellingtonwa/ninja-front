@@ -61,7 +61,7 @@ const ApagarDB = props => {
 
   const onSubmit = async values => {
     if (values) {
-      var regex = /(?<=db-).*/;
+      var regex = /(?<=db-).*$/;
       var sanitized_values = { nome_banco: {} }
       for(var x in values.nome_banco) {
         sanitized_values.nome_banco[x.match(regex)] = true;
