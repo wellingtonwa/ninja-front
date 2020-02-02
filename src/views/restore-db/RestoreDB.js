@@ -3,7 +3,7 @@ import { Form as FinalForm, Field } from "react-final-form";
 import { Link } from "react-router-dom";
 import Dropzone from "react-dropzone";
 
-import { Form, FormGroup, Button } from "reactstrap";
+import { Form, FormGroup, Button, Label, Input } from "reactstrap";
 import LogAtividades from "../../components/LogAtividades";
 
 const RestoreDB = props => {
@@ -18,9 +18,11 @@ const RestoreDB = props => {
 
   const onSubmit = async values => {
     var formData = new FormData();
+    formData.append("informar_nome", values.informar_nome);
+    formData.append("nome-banco", values['nome-banco']);
     if (values.arquivo) {
-      console.log(values.arquivo.name);
       formData.append("arquivo", values.arquivo, values.arquivo.name);
+      
     }
     fetch("http://localhost:5000/restaurar", {
       method: "POST",
@@ -83,6 +85,31 @@ const RestoreDB = props => {
                     )}
                   </Field>
                 </FormGroup>
+                <FormGroup>
+                  <Field name={`informar_nome`} type="checkbox">
+                  {({ input }) => (
+                    <>
+                      <Label>
+                          <input
+                            {...input}
+                          />
+                          Quero informar o nome do banco
+                        </Label>
+                    </>
+                  )}
+                  </Field>
+                </FormGroup>
+                {values.informar_nome && <FormGroup>
+                    <Label>Nome do Banco de Dados</Label>
+                    <Field
+                      name={`nome-banco`}
+                      type="text"
+                      placeholder="Nome do Banco de Dados"
+                    >
+                      {({ input }) => <Input {...input} />}
+                    </Field>
+                  </FormGroup>
+                  }
                 <FormGroup className="buttons">
                   <Button type="submit" disabled={submitting || pristine}>
                     Enviar

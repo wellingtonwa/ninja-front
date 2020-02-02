@@ -14,22 +14,8 @@ const getHeader = () => ({
 
 const REGEX_NUMEROCASO = /(?<=.*)[0-9]{5}$/g;
 
-const initialState = { issue_number: [] };
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "increment":
-      return { count: state.count + 1 };
-    case "decrement":
-      return { count: state.count - 1 };
-    default:
-      throw new Error();
-  }
-}
-
 const ApagarDB = props => {
   const [bancos, setBancos] = useState([]);
-  const [issueNumber, setIssueNumber] = useState([]);
   const [dadosCasos, setDadosCasos] = useState({});
 
   const buscarBancos = () => {
@@ -38,7 +24,6 @@ const ApagarDB = props => {
       const casos = data.data
         .filter(item => item.dbname.match(REGEX_NUMEROCASO))
         .map(item => item.dbname.match(REGEX_NUMEROCASO)[0]);
-      setIssueNumber(casos);
       buscarDadosCasos(casos);
     });
   };
@@ -51,7 +36,7 @@ const ApagarDB = props => {
       });
   };
   
-  const functionInit = () => {
+  function functionInit() {
     buscarBancos();
   };
 
@@ -115,8 +100,7 @@ const ApagarDB = props => {
         render={({ handleSubmit, form, submitting, pristine, values }) => (
           <Form onSubmit={handleSubmit} inline>
             {bancosFields(bancos)}
-            <Col sm="12">
-              <FormGroup>
+            <Col sm="12 mb-2">
                 <Button type="submit" disabled={submitting || pristine}>
                   Enviar
                 </Button>
@@ -128,7 +112,6 @@ const ApagarDB = props => {
                 >
                   Limpar
                 </Button>
-              </FormGroup>
             </Col>
           </Form>
         )}
