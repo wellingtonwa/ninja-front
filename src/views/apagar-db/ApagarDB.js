@@ -53,13 +53,36 @@ const ApagarDB = props => {
     }
   };
 
+  const getIssueStateColor = nomeBanco => {
+    const numeroDoCaso = nomeBanco.match(REGEX_NUMEROCASO)[0];
+    const informacoes = dadosCasos[numeroDoCaso];
+    const state = informacoes && informacoes.estado;
+    switch (state) {
+      case "resolvido":
+      case "fechado":
+        return '#D4EFDF';
+      case "aguardando code review":
+        return '#F2D7D5';
+      case "desenvolvimento":
+        return '#F9E79F';
+      case "retorno":
+        return '#E8DAEF';
+      case 'aguardando teste':
+        return '#7FB3D5';
+      case 'atribuído':
+        return '#D6EAF8';
+      default:
+        return '#EBF5FB';
+    }
+  }
+
   const bancosFields = lista => {
     return (
       lista &&
       lista.map((dado, idx) => (
-        <Col sm="4">
+        <Col sm="4" key={idx}>
           <FormGroup>
-            <div className="card w-100">
+            <div className="card w-100" style={{backgroundColor: getIssueStateColor(dado.dbname)}}>
               <div className="card-body">
                     <>
                       <h5 className="card-title">
