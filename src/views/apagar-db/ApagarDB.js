@@ -54,7 +54,8 @@ const ApagarDB = props => {
   };
 
   const getIssueStateColor = nomeBanco => {
-    const numeroDoCaso = nomeBanco.match(REGEX_NUMEROCASO)[0];
+    const match = nomeBanco.match(REGEX_NUMEROCASO);
+    const numeroDoCaso = match && match[0];
     const informacoes = dadosCasos[numeroDoCaso];
     const state = informacoes && informacoes.estado;
     switch (state) {
