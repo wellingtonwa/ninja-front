@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import LogAtividades from "../../components/LogAtividades";
 import DadosCaso from "../../components/DadosCaso";
+import ConfirmModal from "../../components/ConfirmModal";
 import { Form, FormGroup, Label, Button, Col } from "reactstrap";
 
 const getHeader = () => ({
@@ -16,6 +17,9 @@ const REGEX_NUMEROCASO = /(?<=.*)[0-9]{5}$/g;
 const ApagarDB = props => {
   const [bancos, setBancos] = useState([]);
   const [dadosCasos, setDadosCasos] = useState({});
+  const [versao, setVersao] = useState('');
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [bancoSelecionado, setBancoSelecionado] = useState({});
 
   const buscarBancos = () => {
     axios.get("http://localhost:5000/rodar-sql/bancos").then(data => {
@@ -24,6 +28,11 @@ const ApagarDB = props => {
         .filter(item => item.dbname.match(REGEX_NUMEROCASO))
         .map(item => item.dbname.match(REGEX_NUMEROCASO)[0]);
       buscarDadosCasos(casos);
+    });
+
+    axios.get("http://localhost:5000/versao")
+    .then(versao => {
+      setVersao(versao);
     });
   };
 
@@ -34,7 +43,11 @@ const ApagarDB = props => {
         setDadosCasos(data.data);
       });
   };
-  
+
+  const confirmDeleteToggle = async values => {
+    setConfirmDeleteOpen(!confirmDeleteOpen);
+  }
+
   function functionInit() {
     buscarBancos();
   };
@@ -43,13 +56,21 @@ const ApagarDB = props => {
     functionInit();
   }, []);
 
-  const apagarBanco = async values => {
+  const confirmarApagarBanco = async values => {
     if (values) {
+      setBancoSelecionado(values);
+      confirmDeleteToggle();
+    }
+  };
+
+  const apagarBanco = () => {
+    if (bancoSelecionado) {
       var sanitized_values = { nome_banco: {} }
-      sanitized_values.nome_banco[values] = true;
+      sanitized_values.nome_banco[bancoSelecionado] = true;
       axios
         .post("http://localhost:5000/apagar-db/apagar", sanitized_values, getHeader())
         .then(dados => buscarBancos());
+      confirmDeleteToggle();
     }
   };
 
@@ -94,7 +115,7 @@ const ApagarDB = props => {
                       <h6 className="card-subtitle mb-2">
                         <DadosCaso nomeBanco={dado.dbname} dadosCasos={dadosCasos}/>
                       </h6>
-                      <Button className="mt-1" onClick={apagarBanco.bind(null,  dado.dbname)}>Apagar</Button>
+                      <Button className="mt-1" onClick={confirmarApagarBanco.bind(null,  dado.dbname)}>Apagar</Button>
                     </>
               </div>
             </div>
@@ -106,6 +127,9 @@ const ApagarDB = props => {
 
   return (
     <>
+      <ConfirmModal isOpen={confirmDeleteOpen} toggle={confirmDeleteToggle} confirmAction={apagarBanco}
+      title="Confirmar exclusão"
+      content={bancoSelecionado && `Deseja realmente apagar o banco ${bancoSelecionado}?`}/>
       <Form inline>
         {bancosFields(bancos)}
       </Form>
