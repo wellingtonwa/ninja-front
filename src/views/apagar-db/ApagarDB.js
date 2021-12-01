@@ -63,6 +63,15 @@ const ApagarDB = props => {
     }
   };
 
+  const openFolder = (values) => {
+      if (values && values.match(REGEX_NUMEROCASO)) {
+          axios.post("http://localhost:5000/apagar-db/abrir-pasta", {numero_caso: values.match(REGEX_NUMEROCASO)[0]})
+              .then(retorno => {
+                  console.log(retorno.data.msg);
+              });
+      }
+  };
+
   const apagarBanco = () => {
     if (bancoSelecionado) {
       var sanitized_values = { nome_banco: {} }
@@ -115,7 +124,8 @@ const ApagarDB = props => {
                       <h6 className="card-subtitle mb-2">
                         <DadosCaso nomeBanco={dado.dbname} dadosCasos={dadosCasos}/>
                       </h6>
-                      <Button className="mt-1" onClick={confirmarApagarBanco.bind(null,  dado.dbname)}>Apagar</Button>
+                      <Button className="mt-1 mr-1" onClick={confirmarApagarBanco.bind(null,  dado.dbname)}>Apagar</Button>
+                      <Button className="mt-1" onClick={openFolder.bind(null,  dado.dbname)}>Abrir Pasta</Button>
                     </>
               </div>
             </div>
