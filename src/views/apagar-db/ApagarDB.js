@@ -17,7 +17,6 @@ const REGEX_NUMEROCASO = /(?<=.*)[0-9]{5}$/g;
 const ApagarDB = props => {
   const [bancos, setBancos] = useState([]);
   const [dadosCasos, setDadosCasos] = useState({});
-  const [versao, setVersao] = useState('');
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [bancoSelecionado, setBancoSelecionado] = useState({});
 
@@ -28,11 +27,6 @@ const ApagarDB = props => {
         .filter(item => item.dbname.match(REGEX_NUMEROCASO))
         .map(item => item.dbname.match(REGEX_NUMEROCASO)[0]);
       buscarDadosCasos(casos);
-    });
-
-    axios.get("http://localhost:5000/versao")
-    .then(versao => {
-      setVersao(versao);
     });
   };
 
@@ -54,6 +48,7 @@ const ApagarDB = props => {
 
   useEffect(() => {
     functionInit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const confirmarApagarBanco = async values => {

@@ -30,6 +30,7 @@ const LogAtividades = props => {
         dispatch({ type: "append", payload: msg });
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
   return (

@@ -54,6 +54,7 @@ const DefaultLayout = props => {
     if (!state.socket)
       dispatch({type: 'conectar', payload: dispatch});
     setAuxProps({...props, ...{socket: state.socket, mensagem: state.mensagem, dispatch}});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state])
 
     return (
